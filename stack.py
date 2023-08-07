@@ -1,32 +1,30 @@
 class Stack():
     def __init__(self, max_stack_size=False) -> None:
         self.stack = []
-        self.i = 0
         if (max_stack_size):
             self.max_stack_size = max_stack_size
 
     def get_size(self):
-        return self.i
+        return len(self.stack)
 
     def push(self, element):
-        if (self.i + 1 > self.max_stack_size):
+        if (self.get_size() + 1 > self.max_stack_size):
             return False
         self.stack.append(element)
-        self.i += 1
         return True
 
     def pop(self):
         try:
-            popped = self.stack.pop()
-            self.i -= 1
-            return popped
-        except:
+            return self.stack.pop()
+        except IndexError:
             return False
 
     def clear(self):
-        while self.i > 0:
-            print(self.i)
+        if self.get_size() == 0:
+            return False
+        while self.get_size() > 0:
             self.pop()
+        return True
 
 
 # try:
@@ -61,17 +59,24 @@ while (True):
             print("# {} pushed successfully".format(output))
         else:
             print("# STACK OVERFLOW !!!")
+
     elif (op == 2):
         temp = stack.pop()
         if (temp):
             print("# {} was popped".format(temp))
         else:
             print("# ERROR: STACK IS EMPTY")
+
     elif (op == 3):
-        stack.clear()
-        print("# stack has been cleared")
+        output = stack.clear()
+        if (output):
+            print("# stack has been cleared")
+        else:
+            print("# ERROR: stack is already empty")
+
     elif (op == 4):
         print("# stack size: {}".format(stack.get_size()))
+
     elif (op == 5):
         stack.clear()
         print("# stack has been cleared")
