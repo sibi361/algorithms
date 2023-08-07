@@ -1,3 +1,7 @@
+import numpy as np
+import time
+
+
 def merge(array1, array2):
     merged = []
 
@@ -27,6 +31,17 @@ def merge_sort(array, left, right, name="", debug=False):
 
     return merge(temp_left, temp_right)
 
+# lst = [100, 40, 00000, -85, 30, -999, 100, 25]
+# print(merge_sort(lst, 0, len(lst), "main", True))
 
-lst = [100, 40, 00000, -85, 30, -999, 100, 25]
-print(merge_sort(lst, 0, len(lst), "main", True))
+
+start = time.time()
+
+lst = list(np.random.randint(0, 10000000, 1000))
+
+n = merge_sort(lst, 0, len(lst))
+
+print(n[100:110])
+
+end = time.time()
+print(end - start)
