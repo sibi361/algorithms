@@ -26,6 +26,9 @@ class Stack():
             self.pop()
         return True
 
+    def print_stack(self):
+        print(self.stack)
+
 
 # try:
 #     MAX_STACK_SIZE = int(input("Enter maximum stack size [default 5]: "))
@@ -36,6 +39,8 @@ MAX_STACK_SIZE = 5
 stack = Stack(MAX_STACK_SIZE)
 
 while (True):
+    stack.print_stack()  # for easy debugging
+
     print("\nAvailable stack operations: \n\
         1 Push \n\
         2 Pop \n\
