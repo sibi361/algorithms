@@ -8,13 +8,11 @@ class Stack():
         return self.i
 
     def push(self, element):
-        if (self.i < 0):
-            self.i = 0
         if (self.i + 1 > self.max_stack_size):
-            return "# STACK OVERFLOW !!!"
+            return False
         self.stack.append(element)
         self.i += 1
-        return self.i
+        return True
 
     def pop(self):
         try:
@@ -22,7 +20,7 @@ class Stack():
             self.i -= 1
             return popped
         except:
-            return "# STACK IS EMPTY"
+            return False
 
     def clear(self):
         while self.i > 0:
@@ -30,35 +28,51 @@ class Stack():
             self.pop()
 
 
-MAX_STACK_SIZE = 2
+# try:
+#     MAX_STACK_SIZE = int(input("Enter maximum stack size [default 5]: "))
+# except ValueError:
+#     MAX_STACK_SIZE = 5
+MAX_STACK_SIZE = 5
 
-a = Stack(MAX_STACK_SIZE)
-print("pushed:", a.push(1))
-print("stack size:", a.get_size())
-print()
+stack = Stack(MAX_STACK_SIZE)
 
-print("pushed:", a.push(999))
-print("stack size:", a.get_size())
-print()
+while (True):
+    print("\nAvailable stack operations: \n\
+        1 Push \n\
+        2 Pop \n\
+        3 Clear \n\
+        4 Get Size \n\
+        5 Exit \n\
+        ")
+    try:
+        op = int(input("# Enter option: "))
+    except ValueError:
+        print("Invalid option")
+        continue
 
-print("pushed:", a.push("cow"))
-print("stack size:", a.get_size())
-print()
-
-# print(a.clear())
-
-print("popped:", a.pop())
-print("stack size:", a.get_size())
-print()
-
-print("popped:", a.pop())
-print("stack size:", a.get_size())
-print()
-
-print("popped:", a.pop())
-print("stack size:", a.get_size())
-print()
-
-print("popped:", a.pop())
-print("stack size:", a.get_size())
-print()
+    if (op == 1):
+        temp = input("# Enter element to push: ")
+        if len(temp) == 0:
+            print("# input can't be empty")
+            continue
+        output = stack.push(temp)
+        if (output):
+            print("# {} pushed successfully".format(output))
+        else:
+            print("# STACK OVERFLOW !!!")
+    elif (op == 2):
+        temp = stack.pop()
+        if (temp):
+            print("# {} was popped".format(temp))
+        else:
+            print("# ERROR: STACK IS EMPTY")
+    elif (op == 3):
+        stack.clear()
+        print("# stack has been cleared")
+    elif (op == 4):
+        print("# stack size: {}".format(stack.get_size()))
+    elif (op == 5):
+        stack.clear()
+        print("# stack has been cleared")
+        print("# Exiting")
+        break
