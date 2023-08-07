@@ -1,8 +1,9 @@
 class Stack():
-    def __init__(self, max_stack_size) -> None:
+    def __init__(self, max_stack_size=False) -> None:
         self.stack = []
         self.i = 0
-        self.max_stack_size = max_stack_size
+        if (max_stack_size):
+            self.max_stack_size = max_stack_size
 
     def get_size(self):
         return self.i
