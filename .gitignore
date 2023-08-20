@@ -1,1 +1,7 @@
-*.class
+*
+!.gitignore
+!*/
+!*.c
+!*.py
+!*.java
+test*

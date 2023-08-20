@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-// for demonstration purposes
+// for demonstration purpose
 #define MAX_SIZE 5
 
 int push(int[], int *, int);
@@ -80,7 +80,7 @@ void main()
         case 5:
             clearStack(&top);
             printf("# stack has been cleared\n");
-            printf("# Exiting\n");
+            printf("# Exiting\n\n");
             break;
 
         default:
@@ -102,7 +102,8 @@ int pop(int stack[], int *top)
     if (*top == -1) // stack underflow
         return -99999;
 
-    // prefix and postfix ops have higher precedence than dereference operator
+    // prefix and postfix ops have higher precedence
+    // than dereference operator
     return stack[(*top)--];
 }
 
