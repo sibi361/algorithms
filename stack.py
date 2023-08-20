@@ -61,7 +61,7 @@ while (True):
             continue
         output = stack.push(temp)
         if (output):
-            print("# {} pushed successfully".format(output))
+            print("# {} pushed successfully".format(temp))
         else:
             print("# STACK OVERFLOW !!!")
 
