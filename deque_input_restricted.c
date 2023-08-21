@@ -1,16 +1,16 @@
 #include <stdio.h>
 
 // deque i.e. double ended queue
-// output restricted
-// which means that stuff can be inserted from both front and rear
-// end but can be deleted only from the front
+// input restricted
+// which means that stuff can be deleted from both front and rear
+// end but can be inserted only from the rear
 
 // for demonstration purpose
 #define MAX_SIZE 5
 
-int insert_front(int queue[], int *front, int rear, int item);
 int insert(int queue[], int front, int *rear, int item);
 int delete(int queue[], int *front, int rear);
+int delete_rear(int queue[], int front, int *rear);
 int getSize(int front, int rear);
 int isEmpty(int front, int rear);
 int isFull(int front, int rear);
@@ -32,9 +32,9 @@ void main()
         printf("\n");
 
         printf("Available queue operations: \n\
-        1 Insert Front \n\
-        2 Insert \n\
-        3 Delete \n\
+        1 Insert \n\
+        2 Delete \n\
+        3 Delete Rear\n\
         4 Get Size \n\
         5 isEmpty \n\
         6 isFull \n\
@@ -48,28 +48,17 @@ void main()
         switch (option)
         {
         case 1:
-            printf("# Enter element to insert at front: ");
-            scanf("%d", &temp);
-
-            output = insert_front(queue, &front, rear, temp);
-            if (output)
-                printf("\n# %d inserted successfully at front end\n", temp);
-            else
-                printf("\n# ERROR: QUEUE OVERFLOW\n");
-            break;
-
-        case 2:
             printf("# Enter element to insert: ");
             scanf("%d", &temp);
 
             output = insert(queue, front, &rear, temp);
             if (output)
-                printf("\n# %d inserted successfully at rear end\n", temp);
+                printf("\n# %d inserted successfully\n", temp);
             else
                 printf("\n# ERROR: QUEUE OVERFLOW\n");
             break;
 
-        case 3:
+        case 2:
             temp = delete (queue, &front, rear);
             switch (temp)
             {
@@ -77,7 +66,19 @@ void main()
                 printf("# ERROR: QUEUE UNDERFLOW\n");
                 break;
             default:
-                printf("# deleted %d\n", temp);
+                printf("# deleted %d from the front end\n", temp);
+            }
+            break;
+
+        case 3:
+            temp = delete_rear(queue, front, &rear);
+            switch (temp)
+            {
+            case -99999:
+                printf("# ERROR: QUEUE UNDERFLOW\n");
+                break;
+            default:
+                printf("# deleted %d from the rear end\n", temp);
             }
             break;
 
@@ -119,38 +120,10 @@ void main()
     }
 }
 
-int insert_front(int queue[], int *front, int rear, int item)
-{
-    // make front work just like rear in insert()
-    // the only difference being the direction
-    // i.e. here front keeps decreasing
-
-    // reduce front by one,
-
-    // front being decreased by one towards the left
-    // modulo stuff is required to handle front becoming -1
-    // When that happens it sets front to MAX_SIZE - 1
-    int temp_front = (*front - 1 + MAX_SIZE) % MAX_SIZE;
-
-    // check if the immediately preceding cell is vacant
-    if (temp_front == rear)
-    { // queue overflow
-        printf("#$$$ %d\n", *front);
-        return 0;
-    }
-
-    // fill current empty cell with item and decrease front by one
-    // to the immediately preceding vacant cell
-    queue[*front] = item;
-    *front = temp_front;
-
-    return 1;
-}
-
 int insert(int queue[], int front, int *rear, int item)
 {
-    // rear being increased by one towards the right
     *rear = (*rear + 1) % MAX_SIZE;
+
     if (*rear == front)
     { // queue overflow
         printf("#$$$ %d\n", *rear);
@@ -165,8 +138,25 @@ int delete(int queue[], int *front, int rear)
 {
     if (*front == rear) // queue underflow
         return -99999;
+
+    // front being increased by one towards the right
     *front = (*front + 1) % MAX_SIZE;
     return queue[*front];
+}
+
+int delete_rear(int queue[], int front, int *rear)
+{
+    // notice that the variable being modified gets switched
+    // for e.g. here in case of delete_rear() front becomes rear
+    // this is obvious as the operation is being performed on the
+    // conventionally opposite end
+
+    if (front == *rear) // queue underflow
+        return -99999;
+
+    // rear being decreased by one towards the left
+    *rear = (*rear - 1 + MAX_SIZE) % MAX_SIZE;
+    return queue[*rear];
 }
 
 int getSize(int front, int rear)
