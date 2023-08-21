@@ -108,11 +108,15 @@ void main()
 
 int insert(int queue[], int front, int *rear, int item)
 {
+    // this module stuff exists to prevent overflow
+    // i.e. rear being increased past MAX_SIZE - 1
     *rear = (*rear + 1) % MAX_SIZE;
 
     if (*rear == front)
     { // queue overflow
         printf("#$$$ %d\n", *rear);
+
+        // modulo stuff is required reverse rear to it's previous state
         *rear = (*rear - 1 + MAX_SIZE) % MAX_SIZE;
         return 0;
     }
@@ -124,6 +128,12 @@ int delete(int queue[], int *front, int rear)
 {
     if (*front == rear) // queue underflow
         return -99999;
+
+    // front always points to an empty cell
+    // hence it has to be incremented before extracting element
+    //
+    // modulo stuff is required to prevent overflow
+    // i.e. front being increased past MAX_SIZE - 1
     *front = (*front + 1) % MAX_SIZE;
     return queue[*front];
 }
