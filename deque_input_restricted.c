@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-// deque i.e. double ended queue
-// input restricted
+// deque i.e. double ended queue implemented using circular queue
+// type: input restricted
 // which means that stuff can be deleted from both front and rear
 // end but can be inserted only from the rear
 
