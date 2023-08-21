@@ -1,7 +1,12 @@
 #include <stdio.h>
 
+// circular queue
+// this implementation of the queue data structure won't
+// become unusable once all the cells in the array have been
+// written into once
+
 // for demonstration purpose
-#define MAX_SIZE 3
+#define MAX_SIZE 5
 
 int insert(int queue[], int front, int *rear, int item);
 int delete(int queue[], int *front, int rear);
