@@ -119,7 +119,8 @@ int delete(int queue[], int *front, int rear)
 {
     if (*front == rear) // queue underflow
         return -99999;
-    return queue[++*front];
+    *front = (*front + 1) % MAX_SIZE;
+    return queue[*front];
 }
 
 int getSize(int front, int rear)
@@ -139,7 +140,7 @@ int isEmpty(int front, int rear)
 
 int isFull(int front, int rear)
 {
-    if (getSize(front, rear) == MAX_SIZE)
+    if (getSize(front, rear) == MAX_SIZE - 1) // actual max size
         return 1;
     return 0;
 }
