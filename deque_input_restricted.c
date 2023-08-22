@@ -126,7 +126,6 @@ int insert(int queue[], int front, int *rear, int item)
 
     if (*rear == front)
     { // queue overflow
-        printf("#$$$ %d\n", *rear);
         *rear = (*rear - 1 + MAX_SIZE) % MAX_SIZE;
         return 0;
     }
@@ -154,7 +153,7 @@ int delete_rear(int queue[], int front, int *rear)
     if (front == *rear) // queue underflow
         return -99999;
 
-    // rear being decreased by one towards the left
+    // rear being decremented by one towards the left
     *rear = (*rear - 1 + MAX_SIZE) % MAX_SIZE;
     return queue[*rear];
 }

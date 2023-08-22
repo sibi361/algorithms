@@ -125,19 +125,13 @@ int insert_front(int queue[], int *front, int rear, int item)
     // the only difference being the direction
     // i.e. here front keeps decreasing
 
-    // reduce front by one,
-
-    // front being decreased by one towards the left
-    // modulo stuff is required to handle front becoming -1
-    // When that happens it sets front to MAX_SIZE - 1
+    // front being decremented by one towards the left
+    // front is set to MAX_SIZE - 1 if it becomes -1
     int temp_front = (*front - 1 + MAX_SIZE) % MAX_SIZE;
 
     // check if the immediately preceding cell is vacant
-    if (temp_front == rear)
-    { // queue overflow
-        printf("#$$$ %d\n", *front);
+    if (temp_front == rear) // queue overflow
         return 0;
-    }
 
     // fill current empty cell with item and decrease front by one
     // to the immediately preceding vacant cell
