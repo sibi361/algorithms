@@ -139,7 +139,7 @@ int isEmpty(int front, int rear)
 
 int isFull(int front, int rear)
 {
-    if (getSize(front, rear) == MAX_SIZE)
+    if (getSize(front, rear) == MAX_SIZE || front == MAX_SIZE - 1)
         return 1;
     return 0;
 }
