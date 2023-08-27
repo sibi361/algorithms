@@ -1,40 +1,43 @@
-// Polish Notation
-// Evaluation of reverse Polish i.e. postfix expression
+/*
+Polish Notation
+Evaluation of reverse Polish i.e. postfix expression
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_SIZE 1000
 
+int eval_postfix(char exp[]);
+int is_operator(char operator);
 int push(int stack[], int *top, int item);
 int pop(int stack[], int *top);
-int getSize(int top);
 
 void main()
 {
     // char exp[MAX_SIZE];
-    // char exp[MAX_SIZE] = "232*+";
+    // printf("\nEnter postfix expression: ");
+    // scanf("%[^\n]s", exp);
 
-    // "9-((8/2)*(2+3))" = -11
+    // test cases
+    // 9-((8/2)*(2+3)) = -11
+    // 63-45+* = 27
     char exp[MAX_SIZE] = "982/23+*-";
+
+    printf("\nResult = %d\n\n", eval_postfix(exp));
+}
+
+int eval_postfix(char exp[])
+{
     char temp, op1, op2;
     int stack[MAX_SIZE];
     int top = -1, i = 0, result;
 
-    // printf("\nEnter postfix expression: ");
-    // scanf("%[^\n]s", exp);
-
     temp = exp[i++];
     while (temp != '\0')
     {
-        if (temp != '%' &&
-            temp != '^' &&
-            temp != '/' &&
-            temp != '*' &&
-            temp != '+' &&
-            temp != '-')
+        if (!is_operator(temp))
         {
-
             // temp - '0' is converted character number to integer
             if (!push(stack, &top, temp - '0'))
             {
@@ -68,9 +71,11 @@ void main()
                 result = op1 - op2;
                 break;
             default:
-                printf("Invalid operand: %c\n", temp);
+                printf("Invalid operator: %c\n", temp);
                 exit(0);
             }
+
+            // push result to stack
             if (!push(stack, &top, result))
             {
                 printf("Stack Overflow\n");
@@ -79,7 +84,22 @@ void main()
         }
         temp = exp[i++];
     }
-    printf("\nResult = %d\n\n", result);
+    return result;
+}
+
+int is_operator(char operator)
+{
+    switch (operator)
+    {
+    case '^':
+    case '%':
+    case '/':
+    case '*':
+    case '+':
+    case '-':
+        return 1;
+    }
+    return 0;
 }
 
 int push(int stack[], int *top, int item)
