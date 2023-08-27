@@ -3,12 +3,12 @@
 // for demonstration purpose
 #define MAX_SIZE 5
 
-int push(int[], int *, int);
-int pop(int[], int *);
-int getSize(int);
-int isEmpty(int[], int);
-int isFull(int[], int);
-int clearStack(int *);
+int push(int stack[], int *top, int item);
+int pop(int stack[], int *top);
+int getSize(int top);
+int isEmpty(int stack[], int top);
+int isFull(int stack[], int top);
+int clearStack(int *top);
 
 void print_stack(int stack[], int top)
 {
