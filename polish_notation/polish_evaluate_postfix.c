@@ -12,14 +12,17 @@ int getSize(int top);
 
 void main()
 {
-    char exp[MAX_SIZE];
+    // char exp[MAX_SIZE];
     // char exp[MAX_SIZE] = "232*+";
+
+    // "9-((8/2)*(2+3))" = -11
+    char exp[MAX_SIZE] = "982/23+*-";
     char temp, op1, op2;
     int stack[MAX_SIZE];
     int top = -1, i = 0, result;
 
-    printf("\nEnter infix expression: ");
-    scanf("%[^\n]s", exp);
+    // printf("\nEnter postfix expression: ");
+    // scanf("%[^\n]s", exp);
 
     temp = exp[i++];
     while (temp != '\0')
@@ -41,8 +44,8 @@ void main()
         }
         else
         {
+            op2 = pop(stack, &top); // order is important
             op1 = pop(stack, &top);
-            op2 = pop(stack, &top);
 
             switch (temp)
             {
