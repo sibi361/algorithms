@@ -17,8 +17,8 @@ int get_matrix(int mat[][n], int rows, int cols);
 int get_matrix_non_zero_count(int mat[][n], int rows, int cols);
 void convert_to_sparse_matrix(int mat[][n], int rows, int cols,
                               sparse mat_sparse[]);
-void print_sparse_matrix(sparse *mat_sparse, int non_zero_count);
-void print_sparse_matrix_as_normal_matrix(sparse *mat_sparse);
+void print_sparse_matrix(sparse mat_sparse[]);
+void print_sparse_matrix_normally(sparse mat_sparse[]);
 void print_matrix(int mat[][n], int rows, int cols);
 
 void main()
@@ -69,10 +69,10 @@ void main()
     convert_to_sparse_matrix(mat, m, n, mat_sparse);
 
     printf("\nSparse matrix representation:\n");
-    print_sparse_matrix(mat_sparse, non_zero_count);
+    print_sparse_matrix(mat_sparse);
 
     printf("\nSparse matrix representation being printed as normal matrix:\n");
-    print_sparse_matrix_as_normal_matrix(mat_sparse);
+    print_sparse_matrix_normally(mat_sparse);
 
     printf("\n\nsizeof(mat) = %d\n", sizeof(mat));
     printf("sizeof(mat_sparse) = %d\n", sizeof(mat_sparse));
@@ -126,10 +126,10 @@ void convert_to_sparse_matrix(int mat[][n], int rows, int cols,
     mat_sparse[0].val = k;
 }
 
-void print_sparse_matrix(sparse *mat_sparse, int non_zero_count)
+void print_sparse_matrix(sparse mat_sparse[])
 {
+    int non_zero_count = mat_sparse[0].val;
     printf("id\tRow\tColumn\tValue\n");
-
     for (int i = 0; i <= non_zero_count; i++)
         printf("%d\t%d\t%d\t%d\n",
                i,
@@ -138,7 +138,7 @@ void print_sparse_matrix(sparse *mat_sparse, int non_zero_count)
                mat_sparse[i].val);
 }
 
-void print_sparse_matrix_as_normal_matrix(sparse *mat_sparse)
+void print_sparse_matrix_normally(sparse mat_sparse[])
 {
     int rows = mat_sparse[0].row,
         cols = mat_sparse[0].col,
