@@ -3,7 +3,7 @@
 
 // #define DEFAULT_ROWS 3
 // #define DEFAULT_COLUMNS 3
-#define DEFAULT_ROWS 4
+#define DEFAULT_ROWS 3
 #define DEFAULT_COLUMNS 4
 
 typedef struct
@@ -17,7 +17,8 @@ int get_matrix(int mat[][n], int rows, int cols);
 int get_matrix_non_zero_count(int mat[][n], int rows, int cols);
 void convert_to_sparse_matrix(int mat[][n], int rows, int cols,
                               sparse mat_sparse[]);
-sparse sparse_matrix_transpose(sparse mat_sparse[]);
+void sparse_matrix_transpose(sparse mat_sparse[],
+                             sparse mat_sparse_transpose[]);
 void print_sparse_matrix(sparse mat_sparse[]);
 void print_sparse_matrix_normally(sparse mat_sparse[]);
 void print_matrix(int mat[][n], int rows, int cols);
@@ -39,7 +40,6 @@ void main()
     // int mat[][DEFAULT_COLUMNS] = {{0, 1, 0}, {0, 0, 2}, {3, 0, 0}};
     int mat[][DEFAULT_COLUMNS] = {{0, 1, 0, 0},
                                   {0, 0, 2, 0},
-                                  {0, 3, 0, 0},
                                   {0, 0, 4, 0}};
 
     non_zero_count = get_matrix_non_zero_count(mat, m, n);
@@ -59,16 +59,17 @@ void main()
 
     convert_to_sparse_matrix(mat, m, n, mat_sparse);
 
-    printf("\nSparse matrix before transpose:\n");
-    print_sparse_matrix(mat_sparse);
+    // printf("\nSparse matrix before transpose:\n");
+    // print_sparse_matrix(mat_sparse);
 
-    sparse mat_sparse_transpose[] = sparse_matrix_transpose(mat_sparse);
+    sparse mat_sparse_transpose[non_zero_count];
+    sparse_matrix_transpose(mat_sparse, mat_sparse_transpose);
 
-    printf("\nSparse matrix after transpose:\n");
-    print_sparse_matrix(mat_sparse);
+    // printf("\nSparse matrix after transpose:\n");
+    // print_sparse_matrix(mat_sparse_transpose);
 
     printf("\nGiven matrix after transpose:\n");
-    print_sparse_matrix_normally(mat_sparse);
+    print_sparse_matrix_normally(mat_sparse_transpose);
 
     printf("\n");
 }
@@ -116,19 +117,15 @@ void convert_to_sparse_matrix(int mat[][n], int rows, int cols,
     mat_sparse[0].val = k;
 }
 
-sparse sparse_matrix_transpose(sparse mat_sparse[])
+void sparse_matrix_transpose(sparse mat_sparse[], sparse mat_sparse_transpose[])
 {
     int non_zero_count = mat_sparse[0].val;
-    sparse mat_sparse_transpose[non_zero_count];
-
     for (int i = 0; i < non_zero_count; i++)
     {
         mat_sparse_transpose[i].row = mat_sparse[i].col;
-        mat_sparse_transpose[i].col = mat_sparse[i].col;
+        mat_sparse_transpose[i].col = mat_sparse[i].row;
         mat_sparse_transpose[i].val = mat_sparse[i].val;
     }
-
-    return mat_sparse_transpose;
 }
 
 void print_sparse_matrix(sparse mat_sparse[])
