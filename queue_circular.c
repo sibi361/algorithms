@@ -5,6 +5,9 @@
 // become unusable once all the cells in the array have been
 // written into once
 
+// actual size of queue will be one less than the MAX_SIZE
+// because front always points points to a vacant cell
+
 // for demonstration purpose
 #define MAX_SIZE 5
 
@@ -58,14 +61,10 @@ void main()
 
         case 2:
             temp = delete (queue, &front, rear);
-            switch (temp)
-            {
-            case -99999:
+            if (temp == -99999)
                 printf("# ERROR: QUEUE UNDERFLOW\n");
-                break;
-            default:
+            else
                 printf("# deleted %d\n", temp);
-            }
             break;
 
         case 3:
@@ -108,15 +107,13 @@ void main()
 
 int insert(int queue[], int front, int *rear, int item)
 {
-    // this module stuff exists to prevent overflow
+    // this modulo stuff exists to prevent overflow
     // i.e. rear being increased past MAX_SIZE - 1
     *rear = (*rear + 1) % MAX_SIZE;
 
-    if (*rear == front)
-    { // queue overflow
-        printf("#$$$ %d\n", *rear);
-
-        // modulo stuff is required reverse rear to it's previous state
+    if (*rear == front) // queue overflow
+    {
+        // revert rear to it's previous state
         *rear = (*rear - 1 + MAX_SIZE) % MAX_SIZE;
         return 0;
     }
