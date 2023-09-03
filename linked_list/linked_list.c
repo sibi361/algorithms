@@ -1,63 +1,77 @@
+/*
+Linked list implementation has to use malloc() since simple struct
+node initialisation might not allocate new memory addresses
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
 typedef struct node_ node;
-
 struct node_
 {
     int data;
     node *next;
 };
 
-node createLFromArray(int length, int array[]);
-void traverseL(node head);
+node *createNode(int data);
+node *createListFromArray(int length, int array[]);
+void traverseList(node *head);
 
 void main()
 {
     int test_array[] = {10, -3, 20, 0, 55};
-    node list = createLFromArray(
+
+    node *list = createListFromArray(
         sizeof(test_array) / sizeof(test_array[0]),
         test_array);
 
-    traverseL(list);
+    traverseList(list);
+
+    printf("\n");
 }
 
-node createLFromArray(int length, int array[])
+node *createNode(int data)
 {
-    node n;
+    /*
+    unlike local variables, variables initialised with malloc()
+    are not destroyed after function exit
+    they also have new memory addresses as compared to doing:
+    node temp;
+    */
+    node *temp = (node *)malloc(sizeof(node));
 
+    temp->data = data;
+    temp->next = NULL;
+    return temp;
+}
+
+node *createListFromArray(int length, int array[])
+{
     if (length == 0)
     {
-        printf("Array should have at least one element");
+        printf("Array should have at least one element\n");
         exit(0);
     }
 
-    n.data = array[0];
-    n.next = NULL;
-    node head = n;
+    node *previousNode = createNode(array[0]);
+    node *head = previousNode;
 
     for (int i = 1; i < length; i++)
     {
-        node temp;
-        temp.data = array[i];
-        temp.next = NULL;
-        n.next = &temp;
-        // printf("%u %u\n", &temp, n.next);
-
-        n = temp;
+        node *currentNode = createNode(array[i]);
+        previousNode->next = currentNode;
+        previousNode = currentNode;
     }
 
     return head;
 }
 
-void traverseL(node n)
+void traverseList(node *n)
 {
-    do
+    while (n != NULL)
     {
-        // printf("%d ", n.data);
-        printf("nextL %u\n", n.next);
-        break;
-        n = *(n.next);
-        printf("%d\n", 3333);
-    } while (n.next != NULL);
+        printf("%d ", n->data);
+        n = n->next;
+    }
+    printf("\n");
 }
