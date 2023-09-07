@@ -63,6 +63,14 @@ void main()
     printf("Length of linked list: %d\n", getLength(list));
     traverseLinkedList(list);
 
+    // insert at tail
+    insertion_index = getLength(list);
+    insertion_item = -67;
+    printf("Inserting %d at index %d\n", insertion_item, insertion_index);
+    list = insert(list, insertion_index, insertion_item);
+    printf("Length of linked list: %d\n", getLength(list));
+    traverseLinkedList(list);
+
     // deletion
     deletion_index = 2;
     printf("deleting index %d\n", deletion_index);
@@ -70,14 +78,21 @@ void main()
     printf("Length of linked list: %d\n", getLength(list));
     traverseLinkedList(list);
 
-    deletion_item = 100;
+    // deleting head
+    deletion_index = 0;
+    printf("deleting index %d\n", deletion_index);
+    list = deleteIndex(list, deletion_index);
+    printf("Length of linked list: %d\n", getLength(list));
+    traverseLinkedList(list);
+
+    deletion_item = -67;
     printf("deleting item %d\n", deletion_item);
     list = deleteItem(list, deletion_item);
     printf("Length of linked list: %d\n", getLength(list));
     traverseLinkedList(list);
 
     // search
-    searchQuery = 12;
+    searchQuery = 1;
     found_indexes = search(list, searchQuery);
 
     if (found_indexes[0] == -1)
@@ -110,6 +125,11 @@ node *createNode(int data)
     temp->data = data;
     temp->next = NULL;
     return temp;
+}
+
+node *initLinkedList(int firstDataElement)
+{
+    return createNode(firstDataElement);
 }
 
 node *createLinkedListFromArray(int length, int array[])
@@ -147,12 +167,6 @@ node *createLinkedListFromUserInput()
     return head;
 }
 
-node *initLinkedList(int firstDataElement)
-{
-    node *head = createNode(firstDataElement);
-    return head;
-}
-
 int getLength(node *head)
 {
     node *n = head;
@@ -176,20 +190,20 @@ node *insert(node *head, int index, int item)
 
     node *n = head;
     int i = 1; // head always exists
-    node *currentNode = createNode(item);
+    node *newNode = createNode(item);
 
     if (index == 0)
     {
-        currentNode->next = head;
-        head = currentNode;
+        newNode->next = head;
+        head = newNode;
     }
     else
     {
         while (i++ < index)
             n = n->next;
 
-        currentNode->next = n->next;
-        n->next = currentNode;
+        newNode->next = n->next;
+        n->next = newNode;
     }
 
     return head;
@@ -254,10 +268,12 @@ node *deleteItem(node *head, int item)
     // returns pointer to head just in case head is deleted
 
     int *foundIndexes = search(head, item);
+
     if (foundIndexes[0] == -1)
         printf("%d NOT found\n", item);
     else
         head = deleteIndex(head, foundIndexes[0]);
+
     return head;
 }
 
