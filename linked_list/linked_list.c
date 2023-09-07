@@ -20,10 +20,10 @@ node *createLinkedListFromUserInput();
 int getLength(node *head);
 node *insert(node *head, int index, int item);
 void append(node *head, int item);
-int getIndex(node *head, int index);
+void traverseLinkedList(node *head);
+int getItemAtIndex(node *head, int index);
 node *deleteIndex(node *head, int index);
 node *deleteItem(node *head, int item);
-void traverseLinkedList(node *head);
 int *search(node *head, int query);
 int contains(node *head, int query);
 
@@ -35,10 +35,11 @@ void main()
         deletion_index,
         deletion_item,
         searchQuery,
-        *found_indexes,
+        *found_indices,
         search_i;
 
     int test_array[] = {-3, -2, -1, 0, 1, 2};
+    // int test_array[] = {-3};
 
     // creating
     node *list = createLinkedListFromArray(
@@ -53,7 +54,7 @@ void main()
 
     // fetching index
     get_index = 2;
-    printf("index %d: %d\n\n", get_index, getIndex(list, get_index));
+    printf("index %d: %d\n\n", get_index, getItemAtIndex(list, get_index));
 
     // insert at head
     insertion_index = 0;
@@ -93,16 +94,15 @@ void main()
 
     // search
     searchQuery = 1;
-    found_indexes = search(list, searchQuery);
-
-    if (found_indexes[0] == -1)
+    if (!contains(list, searchQuery))
         printf("%d NOT found\n", searchQuery);
     else
     {
-        printf("%d found at indexes:\n", searchQuery);
+        found_indices = search(list, searchQuery);
+        printf("%d found at indices:\n", searchQuery);
         search_i = 0;
-        while (found_indexes[search_i] != -1)
-            printf("%d ", found_indexes[search_i++]);
+        while (found_indices[search_i] != -1)
+            printf("%d ", found_indices[search_i++]);
         printf("\n");
     }
 
@@ -170,7 +170,7 @@ node *createLinkedListFromUserInput()
 int getLength(node *head)
 {
     node *n = head;
-    int i = 1; // head always exists
+    int i = 1;
 
     while ((n = n->next) != NULL)
         i++;
@@ -189,7 +189,7 @@ node *insert(node *head, int index, int item)
     }
 
     node *n = head;
-    int i = 1; // head always exists
+    int i = 1;
     node *newNode = createNode(item);
 
     if (index == 0)
@@ -214,10 +214,20 @@ void append(node *head, int item)
     insert(head, getLength(head), item);
 }
 
-int getIndex(node *head, int index)
+void traverseLinkedList(node *head)
 {
-    // returns pointer to head just in case head is deleted
+    node *n = head;
 
+    while (n != NULL)
+    {
+        printf("%d ", n->data);
+        n = n->next;
+    }
+    printf("\n\n");
+}
+
+int getItemAtIndex(node *head, int index)
+{
     if (index < 0 || index > getLength(head) - 1)
     {
         printf("Given index %d outside range\n", index);
@@ -225,7 +235,7 @@ int getIndex(node *head, int index)
     }
 
     node *n = head;
-    int i = 0; // head always exists
+    int i = 0;
 
     if (index == 0)
         return head->data;
@@ -247,10 +257,16 @@ node *deleteIndex(node *head, int index)
     }
 
     node *n = head;
-    int i = 1; // head always exists
+    int i = 1;
 
     if (index == 0)
-        head = n->next;
+        if (getLength(head) == 1)
+        {
+            printf("Cannot delete head when length = 1\n");
+            exit(0);
+        }
+        else
+            head = n->next;
     else
     {
         while (i++ < index)
@@ -277,20 +293,14 @@ node *deleteItem(node *head, int item)
     return head;
 }
 
-void traverseLinkedList(node *head)
-{
-    node *n = head;
-
-    while (n != NULL)
-    {
-        printf("%d ", n->data);
-        n = n->next;
-    }
-    printf("\n\n");
-}
-
 int *search(node *head, int query)
 {
+    /*
+    returns array containing indices of items which matching query
+    last index will be -1
+    first element being -1 indicates no match found
+    */
+
     node *n = head;
 
     int i = 0,
@@ -300,13 +310,12 @@ int *search(node *head, int query)
     i = found_i = 0;
     found = (int *)malloc(getLength(n));
 
-    while (n != NULL)
+    do
     {
         if (n->data == query)
             found[found_i++] = i;
-        n = n->next;
         i++;
-    }
+    } while ((n = n->next) != NULL);
 
     found[found_i] = -1;
     return found;
@@ -314,14 +323,7 @@ int *search(node *head, int query)
 
 int contains(node *head, int query)
 {
-    node *n = head;
-
-    while (n != NULL)
-    {
-        if (n->data == query)
-            return 1;
-        n = n->next;
-    }
-
-    return 0;
+    if (search(head, query)[0] == -1)
+        return 0;
+    return 1;
 }

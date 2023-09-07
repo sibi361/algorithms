@@ -16,12 +16,12 @@ node *createLinkedListFromUserInput();
 int getLength(node *head);
 node *insert(node *head, int index, int item);
 void append(node *head, int item);
+void traverseLinkedList(node *head);
 node *getTail(node *head);
-int getIndex(node *head, int index);
+void traverseLinkedListBackwards(node *tail);
+int getItemAtIndex(node *head, int index);
 node *deleteIndex(node *head, int index);
 node *deleteItem(node *head, int item);
-void traverseLinkedList(node *head);
-void traverseLinkedListBackwards(node *tail);
 int *search(node *head, int query);
 int contains(node *head, int query);
 
@@ -33,11 +33,13 @@ void main()
         deletion_index,
         deletion_item,
         searchQuery,
-        *found_indexes,
+        *found_indices,
         search_i;
 
-    // creating
     int test_array[] = {5, 10, 15, 20, 0, -3, 55, 9};
+    // int test_array[] = {-3};
+
+    // creating
     node *list = createLinkedListFromArray(
         sizeof(test_array) / sizeof(test_array[0]),
         test_array);
@@ -54,7 +56,7 @@ void main()
 
     // fetching index
     get_index = 2;
-    printf("at index %d: %d\n\n", get_index, getIndex(list, get_index));
+    // printf("at index %d: %d\n\n", get_index, getItemAtIndex(list, get_index));
 
     // insert at head
     insertion_index = 0;
@@ -93,17 +95,16 @@ void main()
     traverseLinkedList(list);
 
     // search
-    searchQuery = 15;
-    found_indexes = search(list, searchQuery);
-
-    if (found_indexes[0] == -1)
+    searchQuery = 20;
+    if (!contains(list, searchQuery))
         printf("%d NOT found\n", searchQuery);
     else
     {
-        printf("%d found at the following indexes:\n", searchQuery);
+        found_indices = search(list, searchQuery);
+        printf("%d found at indices:\n", searchQuery);
         search_i = 0;
-        while (found_indexes[search_i] != -1)
-            printf("%d ", found_indexes[search_i++]);
+        while (found_indices[search_i] != -1)
+            printf("%d ", found_indices[search_i++]);
         printf("\n");
     }
 
@@ -182,7 +183,7 @@ node *insert(node *head, int index, int item)
     }
 
     node *n = head;
-    int i = 1; // head always exists
+    int i = 1;
 
     if (index == 0)
     {
@@ -208,9 +209,24 @@ void append(node *head, int item)
     insert(head, getLength(head), item);
 }
 
+void traverseLinkedList(node *head)
+{
+    node *n = head;
+
+    while (n != NULL)
+    {
+        printf("%d ", n->data);
+        n = n->next;
+    }
+    printf("\n\n");
+}
+
 node *getTail(node *head)
 {
     node *n = head;
+
+    if (getLength(head) == 1)
+        return head;
 
     do
         n = n->next;
@@ -218,10 +234,21 @@ node *getTail(node *head)
     return n;
 }
 
-int getIndex(node *head, int index)
+void traverseLinkedListBackwards(node *head)
 {
-    // returns pointer to head just in case head is deleted
+    node *tail = getTail(head);
+    node *n = tail;
 
+    while (n != NULL)
+    {
+        printf("%d ", n->data);
+        n = n->previous;
+    }
+    printf("\n\n");
+}
+
+int getItemAtIndex(node *head, int index)
+{
     if (index < 0 || index > getLength(head) - 1)
     {
         printf("Given index %d outside range\n", index);
@@ -229,7 +256,7 @@ int getIndex(node *head, int index)
     }
 
     node *n = head;
-    int i = 0; // head always exists
+    int i = 0;
 
     if (index == 0)
         return head->data;
@@ -251,10 +278,16 @@ node *deleteIndex(node *head, int index)
     }
 
     node *n = head;
-    int i = 1; // head always exists
+    int i = 1;
 
     if (index == 0)
-        head = n->next;
+        if (getLength(head) == 1)
+        {
+            printf("Cannot delete head when length = 1\n");
+            exit(0);
+        }
+        else
+            head = n->next;
     else
     {
         while (i++ < index)
@@ -281,31 +314,6 @@ node *deleteItem(node *head, int item)
     return head;
 }
 
-void traverseLinkedList(node *head)
-{
-    node *n = head;
-
-    while (n != NULL)
-    {
-        printf("%d ", n->data);
-        n = n->next;
-    }
-    printf("\n\n");
-}
-
-void traverseLinkedListBackwards(node *head)
-{
-    node *tail = getTail(head);
-    node *n = tail;
-
-    while (n != NULL)
-    {
-        printf("%d ", n->data);
-        n = n->previous;
-    }
-    printf("\n\n");
-}
-
 int getLength(node *head)
 {
     node *n = head;
@@ -319,6 +327,12 @@ int getLength(node *head)
 
 int *search(node *head, int query)
 {
+    /*
+    returns array containing indices of items which matching query
+    last index will be -1
+    first element being -1 indicates no match found
+    */
+
     node *n = head;
 
     int i = 0,
@@ -328,13 +342,12 @@ int *search(node *head, int query)
     i = found_i = 0;
     found = (int *)malloc(getLength(n));
 
-    while (n != NULL)
+    do
     {
         if (n->data == query)
             found[found_i++] = i;
-        n = n->next;
         i++;
-    }
+    } while ((n = n->next) != NULL);
 
     found[found_i] = -1;
     return found;
@@ -342,14 +355,7 @@ int *search(node *head, int query)
 
 int contains(node *head, int query)
 {
-    node *n = head;
-
-    while (n != NULL)
-    {
-        if (n->data == query)
-            return 1;
-        n = n->next;
-    }
-
-    return 0;
+    if (search(head, query)[0] == -1)
+        return 0;
+    return 1;
 }
