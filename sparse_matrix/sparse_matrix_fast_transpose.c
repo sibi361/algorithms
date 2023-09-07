@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #define DEFAULT_ROWS 0 // [if (non_zero_count > 0) ...] not required
 // #define DEFAULT_COLUMNS 0
 // #define DEFAULT_ROWS 3
 // #define DEFAULT_COLUMNS 3
@@ -41,7 +40,6 @@ void main()
     // non_zero_count = get_matrix(mat, m, n);
 
     // test cases
-    // int mat[][0] = {};
     // int mat[][DEFAULT_COLUMNS] = {{0, 1, 0}, {0, 0, 2}, {3, 0, 0}};
     // int mat[][DEFAULT_COLUMNS] = {{12, 10, 0},
     //                               {0, 0, 56},
@@ -56,8 +54,8 @@ void main()
     matrix_size = m * n / 2;
     if (non_zero_count > matrix_size)
     {
-        printf("\nERROR: Given matrix is NOT sparse as count(non-zero elements)\
-[%d] is > half the matrix size[%d]\n\n",
+        printf("\nERROR: Given matrix is NOT sparse as \
+count(non-zero elements) [%d] is > half the matrix size[%d]\n\n",
                non_zero_count, matrix_size);
         exit(0);
     }
@@ -127,56 +125,64 @@ void convert_to_sparse_matrix(int mat[][n], int rows, int cols,
     mat_sparse[0].val = k;
 }
 
-void sparse_matrix_transpose(sparse mat_sparse[], sparse mat_sparse_transpose[])
+void sparse_matrix_transpose(sparse mat_sparse[],
+                             sparse mat_sparse_transpose[])
 {
-    int rows = mat_sparse[0].row,
-        cols = mat_sparse[0].col,
+    int cols = mat_sparse[0].col,
         non_zero_count = mat_sparse[0].val,
         k = 1; // mat_sparse_transpose index
 
     // swapping rows and columns in metadata
-    mat_sparse_transpose[0].row = mat_sparse[0].col;
+    mat_sparse_transpose[0].row = cols;
     mat_sparse_transpose[0].col = mat_sparse[0].row;
-    mat_sparse_transpose[0].val = mat_sparse[0].val;
+    mat_sparse_transpose[0].val = non_zero_count;
 
+    if (non_zero_count == 0)
+        return;
+
+    // "row" after transpose, right now it "column"
+    // sole use is finding sparse_start_pos for all columns
+    int row_count[cols];
+
+    // index of first element belonging to that row (later column)
+    // in the mat_sparse_transpose[] array
+    int sparse_start_pos[cols];
+
+    // initialise column counts of all columns to zero
     for (int col = 0; col < cols; col++)
-    {
-        for (int i = 1; i <= non_zero_count; i++)
-            if (mat_sparse[i].col == col)
-            {
-                mat_sparse_transpose[k].col = mat_sparse[i].row;
-                mat_sparse_transpose[k].row = mat_sparse[i].col;
-                mat_sparse_transpose[k].val = mat_sparse[i].val;
-                k++;
-            }
-    }
+        row_count[col] = 0;
+
+    for (int i = 1; i <= non_zero_count; i++)
+        // increment column count of the column to which the
+        // mat_sparse[i] belongs to
+        ++row_count[mat_sparse[i].col];
 
     /*
-    previous incorrect code:
-    int end;
-    if (cols > rows)
-        end = cols;
-    else
-        end = rows;
-    for (int row = 0; row < end; col++){ // row by row
-        // ...
-            if (mat_sparse[i].col == col)
-    }
-
-    We were going row by row instead of going by columns. This was
-    the cause of the last few rows (in the result) being blank as
-    the row variable never reached those columns
-    (in the original matrix), in cases where COLS > ROW and hence
-    they were never evaluated by the if block.
-
-    Fix:
+    // below loop is the longer-not-to-be-used version of the
+    // above two loops which I had initially written
+    // lesson: no code is the best code, there is always room
+    // for improvement
     for (int col = 0; col < cols; col++)
-    Always go by columns since the if block is checking for column
-    match. When cols > rows, all of them will be scanned and same
-    goes for when cols < rows as the second loop i.e.
-    for (int i = 1; i <= non_zero_count; i++)
-    will go through every value and hence every row.
+    {
+        row_count[col] = 0;
+        for (int i = 1; i <= non_zero_count; i++)
+            if (mat_sparse[i].col == col)
+                ++row_count[col];
+    }
     */
+
+    sparse_start_pos[0] = 1;
+    for (int i = 1; i <= non_zero_count; i++)
+        sparse_start_pos[i] = sparse_start_pos[i - 1] +
+                              row_count[i - 1];
+
+    for (int i = 1; i <= non_zero_count; i++)
+    {
+        k = sparse_start_pos[mat_sparse[i].col]++;
+        mat_sparse_transpose[k].col = mat_sparse[i].row;
+        mat_sparse_transpose[k].row = mat_sparse[i].col;
+        mat_sparse_transpose[k++].val = mat_sparse[i].val;
+    }
 }
 
 void print_sparse_matrix(sparse mat_sparse[])
