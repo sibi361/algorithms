@@ -3,6 +3,7 @@
 !*/
 !*.c
 !*.py
+!*.md
 !*.java
 !*.js
 test*
