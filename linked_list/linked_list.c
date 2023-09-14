@@ -250,6 +250,8 @@ node *deleteIndex(node *head, int index)
 {
     // returns pointer to head just in case head is deleted
 
+    node *toBeDeleted;
+
     if (index < 0 || index > getLength(head) - 1)
     {
         printf("Given index %d outside range\n", index);
@@ -272,7 +274,9 @@ node *deleteIndex(node *head, int index)
         while (i++ < index)
             n = n->next;
 
+        toBeDeleted = n->next;
         n->next = n->next->next;
+        free(toBeDeleted);
     }
 
     return head;
