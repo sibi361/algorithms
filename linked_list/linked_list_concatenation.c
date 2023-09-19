@@ -23,15 +23,6 @@ void concat(node *head_a, node *head_b);
 
 void main()
 {
-    int get_index,
-        insertion_index,
-        insertion_item,
-        deletion_index,
-        deletion_item,
-        searchQuery,
-        *found_indices,
-        search_i;
-
     int test_array_a[] = {-3, 2};
     int test_array_b[] = {10, 20, -99};
 
