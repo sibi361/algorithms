@@ -24,6 +24,8 @@ node *deleteItem(node *head, int item);
 void traverseLinkedList(node *head);
 int *search(node *head, int query);
 int contains(node *head, int query);
+node *getAddressOfIndex(node *head, int index);
+node *deleteElementGivenAddress(node *toBeDeleted);
 
 void main()
 {
@@ -90,8 +92,16 @@ void main()
     printf("Length of circular linked list: %d\n", getLength(list));
     traverseLinkedList(list);
 
+    // deleting element by address without passing head
+    node *one = getAddressOfIndex(list, 3);
+    deleteElementGivenAddress(one);
+    // list = deleteElementGivenAddress(list); // demonstrating head deletion
+    printf("Deleting element \"1\" by address\n");
+    printf("Length of circular linked list: %d\n", getLength(list));
+    traverseLinkedList(list);
+
     // search
-    searchQuery = 1;
+    searchQuery = 0;
     if (!contains(list, searchQuery))
         printf("%d NOT found\n", searchQuery);
     else
@@ -310,6 +320,45 @@ node *deleteItem(node *head, int item)
         head = deleteIndex(head, foundIndexes[0]);
 
     return head;
+}
+
+node *getAddressOfIndex(node *head, int index)
+{
+    if (index < 0 || index > getLength(head) - 1)
+    {
+        printf("Given index %d outside range\n", index);
+        exit(0);
+    }
+
+    node *n = head;
+    int i = 0;
+
+    if (index == 0)
+        return head;
+    else
+        while (++i <= index)
+            n = n->next;
+
+    return n;
+}
+
+node *deleteElementGivenAddress(node *toBeDeleted)
+{
+    // does not work for these edge cases:
+    //     - list contains one or less elements
+
+    node *n = toBeDeleted;
+
+    while (n->next != toBeDeleted)
+        n = n->next;
+
+    n->next = toBeDeleted->next;
+    free(toBeDeleted);
+
+    // in case head is deleted, the node following head
+    // will become the new head
+    // in that case main() must update head in it's scope
+    return n->next;
 }
 
 int *search(node *head, int query)
