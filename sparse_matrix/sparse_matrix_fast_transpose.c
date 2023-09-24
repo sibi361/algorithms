@@ -172,7 +172,7 @@ void sparse_matrix_transpose(sparse mat_sparse[],
     */
 
     sparse_start_pos[0] = 1;
-    for (int i = 1; i <= non_zero_count; i++)
+    for (int i = 1; i < cols; i++)
         sparse_start_pos[i] = sparse_start_pos[i - 1] +
                               row_count[i - 1];
 
