@@ -1,30 +1,35 @@
-// import java.util.Scanner;
+import java.util.EmptyStackException;
 
-class Stack {
-    int MAX_SIZE = 100;
-    int stack[];
-    int top = -1;
+class Stack<T> {
+    private int DEFAULT_MAX_SIZE = 100, max_size, top;
+    private T stack[];
 
-    Stack() {
-        stack = new int[MAX_SIZE];
+    public Stack() {
+        this.max_size = DEFAULT_MAX_SIZE;
+        initializeStack();
     }
 
-    Stack(int user_max_size) {
-        this.MAX_SIZE = user_max_size;
-        stack = new int[MAX_SIZE];
+    public Stack(int user_max_size) {
+        this.max_size = user_max_size;
+        initializeStack();
     }
 
-    void push(int item) {
-        if (top == this.MAX_SIZE - 1) {
+    private void initializeStack() {
+        top = -1;
+        stack = (T[]) new Object[max_size];
+    }
+
+    public void push(T item) {
+        if (top == this.max_size - 1) {
             System.out.println("# ERROR: Stack Overflow");
             return;
         }
         this.stack[++top] = item;
     }
 
-    int pop() {
+    public T pop() {
         if (top == -1)
-            return -999999;
+            throw new EmptyStackException();
 
         return this.stack[top--];
     }
@@ -34,7 +39,7 @@ class Stack_Java {
     public static void main(String args[]) {
         System.out.println("Implementing Stack data structure in Java\n");
 
-        Stack st = new Stack(5);
+        Stack<Integer> st = new Stack<Integer>(5);
         int popped;
 
         for (int i = 0; i < 6; i++) {
@@ -46,11 +51,12 @@ class Stack_Java {
         System.out.println();
 
         for (int i = 0; i < 6; i++) {
-            popped = st.pop();
-            if (popped == -999999) // handling stack underflow
-                System.out.println("# ERROR: Stack Underflow");
-            else
+            try {
+                popped = st.pop();
                 System.out.println("Popped " + popped);
+            } catch (EmptyStackException e) {
+                System.out.println("# ERROR: Stack Underflow");
+            }
         }
 
         System.out.println();
