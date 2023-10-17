@@ -1,8 +1,3 @@
-/*
-Linked list implementation has to use malloc() since simple struct
-node initialisation might not allocate new memory addresses
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19,6 +14,7 @@ struct node_
 
 node *createNode(int coeff, int exp);
 node *createLinkedListFromArray(int length, int array[][2]);
+node *createLinkedListFromUserInput();
 int getLength(node *head);
 node *insert(node *head, int index, int coeff, int exp);
 void append(node *head, int coeff, int exp);
@@ -47,6 +43,9 @@ void main()
     node *poly_b = createLinkedListFromArray(
         sizeof(poly_array_2) / sizeof(poly_array_2[0]),
         poly_array_2);
+
+    // node *poly_a = createLinkedListFromUserInput();
+    // node *poly_b = createLinkedListFromUserInput();
 
     // traversing
     printf("\nPrinting polynomial A:\n");
@@ -82,7 +81,7 @@ node *createNode(int coeff, int exp)
 
 node *createLinkedListFromArray(int length, int array[][2])
 {
-    if (length == 0)
+    if (length < 0)
     {
         printf("Array should have at least one element\n");
         exit(0);
@@ -92,6 +91,28 @@ node *createLinkedListFromArray(int length, int array[][2])
 
     for (int i = 1; i < length; i++)
         append(head, array[i][0], array[i][1]);
+
+    return head;
+}
+
+node *createLinkedListFromUserInput()
+{
+    int n, power, temp, i;
+    node *head;
+
+    printf("\nEnter number of elements: ");
+    scanf("%d", &n);
+
+    i = 0;
+    do
+    {
+        printf("Enter coefficient and power: ");
+        scanf("%d %d", &temp, &power);
+        if (!i)
+            head = createNode(temp, power);
+        else
+            append(head, temp, power);
+    } while (i++ < n - 1);
 
     return head;
 }
@@ -149,10 +170,11 @@ void printPolynomial(node *head)
 
     while (n != NULL)
     {
-        if (n->next)
-            printf("%dx^%d + ", n->coeff, n->exp);
+        if (n->next == NULL || n->next->coeff < 0)
+            printf("%dx^%d ", n->coeff, n->exp);
         else
-            printf("%dx^%d", n->coeff, n->exp);
+            printf("%dx^%d + ", n->coeff, n->exp);
+
         n = n->next;
     }
     printf("\n");
