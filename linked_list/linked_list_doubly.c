@@ -18,7 +18,7 @@ node *insert(node *head, int index, int item);
 void append(node *head, int item);
 void traverseLinkedList(node *head);
 node *getTail(node *head);
-void traverseLinkedListBackwards(node *tail);
+void traverseDoublyLinkedListBackwards(node *tail);
 int getItemAtIndex(node *head, int index);
 node *deleteIndex(node *head, int index);
 node *deleteItem(node *head, int item);
@@ -50,7 +50,7 @@ void main()
     traverseLinkedList(list);
 
     printf("Traversing Backwards:\n");
-    traverseLinkedListBackwards(list);
+    traverseDoublyLinkedListBackwards(list);
 
     printf("Length of doubly linked list: %d\n\n", getLength(list));
 
@@ -232,16 +232,28 @@ node *getTail(node *head)
     return n;
 }
 
-void traverseLinkedListBackwards(node *head)
+void traverseDoublyLinkedListBackwards(node *head)
 {
-    node *tail = getTail(head);
-    node *n = tail;
+    node *tail, *n = head;
 
-    while (n != NULL)
+    if (!head)
+        return;
+
+    if (!head->next)
     {
-        printf("%d ", n->data);
-        n = n->previous;
+        printf("%d\n", head->data);
+        return;
     }
+
+    // get tail
+    do
+        n = n->next;
+    while (n->next);
+
+    do
+        printf("%d ", n->data);
+    while (n = n->previous);
+
     printf("\n\n");
 }
 
